@@ -1,0 +1,139 @@
+.candidates-holdong-cont{
+  height: 100%;
+  margin-bottom: 6rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+}
+.all-candidates-cont {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 1rem;
+    width: 100%;
+    min-width: 500px;
+    align-items: center;
+   
+
+}
+.candidates-cont{
+    display: flex;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: aliceblue;
+    box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+-webkit-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+-moz-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+border-radius: 8px;
+max-width: 400px;
+align-items: center;
+width: 60%;
+min-width: 300px;
+
+
+
+}
+.candidates-cont-right {
+  width: 100%;
+}
+.candidates-cont-right  h2 ,h4 {
+  margin:0;
+}
+.candidates-cont-right  h4 {
+    color:rgba(0, 0, 0, 0.65);
+}
+
+.candidates-cont-right  button {
+    margin-block:1rem;
+    padding: .8rem 2rem;
+    background-color: rgba(255, 255, 255, 0.85);
+    color:black ;
+    border: solid 1px rgba(0, 0, 0, 0.742);
+    border-radius: 8px;
+    transition: all .2s ease;
+    cursor: pointer;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    transition: all .2s ease-in-out;
+
+  }
+  .candidates-cont-right  button:hover {
+    color: red;
+    border-color:red ;
+  }
+.candidates-cont img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: fill;
+}
+.extra-user {
+  width: 80%;
+}
+.extra-user-2 {
+  max-width: 600px;
+  flex-direction: column;
+  width: 60%;
+    min-width: 240px;
+}
+.extra-user-2 h2{
+  font-weight: normal;
+  font-size: 1rem;
+}
+.extra-user-2 img{
+  width: 100px;
+  height: 100px;
+}
+.buttons-cont{
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+.edit-cont { 
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.331);
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+.sub-title{
+  color: white;
+  font-weight: normal;
+}
+.closing-button{
+  position: absolute;
+  top:3rem;
+  right: 3rem;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+.active {
+  border: solid 2px black;
+  color:#000000 !important;
+}
+@media screen and (max-width: 525px) {
+ 
+  .all-candidates-cont {
+  
+    min-width: 300px;
+
+}
+.buttons-cont{
+  justify-content: flex-start;
+}
+.candidates-cont-right  button {
+  margin-bottom: 0;
+}
+}

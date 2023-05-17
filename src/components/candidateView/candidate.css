@@ -1,0 +1,64 @@
+.candidate-cont{
+    display: flex;
+    flex-direction: column;
+    background-color: #2565AE;
+    border-radius: 8px;
+    padding: 2rem .5rem; 
+    max-width: 500px;
+    min-width: 250px;
+    box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+   
+    width: 100%;
+    border-bottom: solid 2px #80008096;
+}
+.cont-upper{
+    display: flex;
+    gap:1rem;
+    color: rgba(255, 255, 255, 0.85);
+
+}
+.cont-upper p {
+    color: rgba(255, 255, 255, 0.85);
+    margin-block: .2rem;
+
+}
+#description{
+    font-size: .7rem;
+}
+.cont-upper img {
+    object-fit: fill;
+    width: 60px;
+    border-radius: 50%;
+    height: 60px;
+}
+.cont-lower{
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.85);
+    align-items: center;
+}
+.cont-lower button{ 
+  padding: .8rem 2rem;
+  background-color: #1E1E1E;
+  color: rgba(255, 255, 255, 0.85);
+  border: none;
+  border-radius: 8px;
+  transition: all .2s ease;
+  cursor: pointer;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cont-lower button:hover{ 
+    transform: scale(1.1);
+  }
+
+  @media screen and (min-width: 480px) {
+    .candidate-cont{
+        padding: 2rem 1rem; 
+        
+    }
+  }

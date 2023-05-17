@@ -1,0 +1,28 @@
+
+.form-cont { 
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.form-cont form {
+  
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 3rem 4rem;
+    margin-top: 2rem;
+    background-color:#2565AE ;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
+}
+.form-cont-div {
+     
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    gap:1rem;
+}

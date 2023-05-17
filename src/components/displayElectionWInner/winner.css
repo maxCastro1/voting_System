@@ -1,0 +1,24 @@
+.extra{
+    position: relative;
+}
+.extra::before {
+ content: "Winner of the election ";
+ width: 100%;
+ height: 20px;
+ background-color: greenyellow;
+ top:0;
+ position:absolute;
+ right: 0;
+ border-top-right-radius: 8px;
+ border-top-left-radius: 8px;
+ font-weight: bold;
+ color: black;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: .6rem;
+
+}
+.cont-upper { 
+    width: 100%;
+}

@@ -1,0 +1,10 @@
+footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color:#0F5298;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 1rem ;
+    font-size: .8rem;
+}

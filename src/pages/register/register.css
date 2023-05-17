@@ -1,0 +1,13 @@
+form {
+    padding: .5rem;
+}
+#formm{
+    width: 80%;
+}
+.button-cont > a {
+    color:white;
+} 
+.extra{
+    flex-direction: row;
+    align-items: flex-end;
+   }
