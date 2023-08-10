@@ -30,16 +30,6 @@ const UserSchema = new mongoose.Schema({
       required: [true, 'Please provide password'],
       minlength: 3,
     },
-    age: {
-        type: Number,
-        required: [true, 'Please provide your age'],
-        minlength: 1,
-      },
-      nationalId: {
-        type: Number,
-        required: [true, 'Please provide your national id number'],
-        minlength: 16,
-      },
       admin: {
         type: Boolean,
         default: false,
@@ -47,6 +37,13 @@ const UserSchema = new mongoose.Schema({
       picture: {
        type:String,
        required: [true, 'Please provide your picture'],
+      },
+      cell:{
+        type: String,
+      },
+      phone: {
+        type: Number,
+        required: [true, 'Please provide your number'],
       }
       
   })

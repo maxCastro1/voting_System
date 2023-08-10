@@ -9,7 +9,7 @@ const electionSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, 'Please provide password'],
+    required: [true, 'Please provide description'],
     minlength: 3,
   },
   start_time: {
@@ -21,6 +21,29 @@ const electionSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Please provide end time'],
   },
+  typeAdministrative: {
+    type:Boolean,
+    default:false,
+  },
+  finished: {
+   type:Boolean,
+   default:false,
+  },
+  failed: {
+   type:Boolean,
+   default:false,
+  },
+  pending: [
+    {
+      candidate: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Candidate',
+      }, answer : {
+        type:Boolean,
+        default: false,
+      }
+    }
+  ],
   candidates: [
     {
       candidate: {
@@ -29,7 +52,11 @@ const electionSchema = new mongoose.Schema({
         required: true
       },
     }
-  ]
+  ],
+  winners: {
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+  },
 })
 
 module.exports = mongoose.model('Election', electionSchema)

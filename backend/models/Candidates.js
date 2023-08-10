@@ -1,49 +1,46 @@
-const mongoose = require('mongoose')
-
+const mongoose = require('mongoose');
 
 const CandidateSchema = new mongoose.Schema({
-  first_name: {
-    type: String,
-    required: [true, 'Please provide name'],
-    maxlength: 50,
-    minlength: 3,
-  },
-  last_name: {
-    type: String,
-    required: [true, 'Please provide name'],
-    maxlength: 50,
-    minlength: 3,
-  },
-  email: {
-    type: String,
-    required: [true, 'Please provide email'],
-    match: [
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      'Please provide a valid email',
-    ],
-    unique: true,
+  // Reference to the User collection using userId
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
   description: {
     type: String,
     required: [true, 'Please provide a description'],
     minlength: 6,
   },
-  picture: {
-    type: String, 
+  Department: {
+    type: String,
+  },
+  age: {
+    type: Number,
+  },
+  admin: {
+    type: Boolean,
+    default: false,
   },
   votes: [
     {
       user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
       },
       vote_id: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
-      }
-    }
-  ]
+        ref: 'votes',
+        required: true,
+      },
+      election_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'elections',
+        required: true,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model('Candidate', CandidateSchema);

@@ -1,6 +1,7 @@
 const Candidate = require('../models/Candidates');
 const Vote = require('../models/Vote');
 const Election = require('../models/Election');
+const User = require('../models/User')
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const path = require('path');
@@ -8,47 +9,51 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 
-const uploadImage = async (imagePath) => {
-  const options = {
-    use_filename: true,
-    unique_filename: false,
-    overwrite: true,
-  };
 
-  try {
-    const result = await cloudinary.uploader.upload(imagePath, options);
-    const imageUrl = result.url;
-    // console.log(imageUrl)
-    return imageUrl
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Failed to upload image" });
-  }
-};
+// const uploadImage = async (imagePath) => {
+//   const options = {
+//     use_filename: true,
+//     unique_filename: false,
+//     overwrite: true,
+//   };
+
+//   try {
+//     const result = await cloudinary.uploader.upload(imagePath, options);
+//     const imageUrl = result.url;
+//     // console.log(imageUrl)
+//     return imageUrl
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ error: "Failed to upload image" });
+//   }
+// };
+// const imageUrl = await uploadImage(picture)
 
 const createCandidate = async (req, res) => {
   try {
-    const { email, first_name, last_name, description,picture } = req.body;
-    const existingUser = await Candidate.findOne({
-      $or: [
-        { email },
-        { first_name, last_name },
-      ],
-    });
-    if (existingUser) {
+    const { userId,description,age,department,admin } = req.body;
+     console.log(userId)
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found. Please make sure the user exists before registering as a candidate.",
+      });
+    }
+    
+    const existingCandidate = await Candidate.findOne({ userId: userId });
+    if (existingCandidate) {
       return res.status(400).json({
-        error: "A user with the same email or name already exists",
+        error: "A candidate with the same userID already exists.",
       });
     }
 
     
-   const imageUrl = await uploadImage(picture)
     const candidate = await Candidate.create({
-      email,
-      first_name,
-      last_name,
+      userId: userId, // Set the reference to the User collection
       description,
-      picture: imageUrl,
+      age,
+      department,
+      admin,
     });
 
     res.status(200).json({ candidate });
@@ -83,9 +88,6 @@ const getAllCandidate = async (req, res) => {
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
-
-  
-
   const addVoteToCandidate = async (req, res) => {
     try {
       const { candidateId } = req.params;
@@ -118,7 +120,7 @@ const getAllCandidate = async (req, res) => {
       await newVote.save();
   
       // Add the new vote to the candidate's votes array
-      candidate.votes.push({ user: userId, vote_id: newVote._id });
+      candidate.votes.push({ user: userId, vote_id: newVote._id, election_id:electionId });
       await candidate.save();
   
       return res.status(200).json({ message: 'Vote added to candidate successfully', voteId: newVote._id });
@@ -186,27 +188,17 @@ const updateCandidate = async (req,res) => {
       // Handle case where candidate is not found
       throw new Error('Candidate not found');
     }
-
     // Update fields if provided
-    if (first_name) {
-      candidate.first_name = first_name;
-    }
-
-    if (last_name) {
-      candidate.last_name = last_name;
-    }
-
-    if (email) {
-      candidate.email = email;
-    }
-
-    if (description) {
-      candidate.description = description;
-    }
-
-    if (picture) {
-      candidate.picture = picture;
-    }
+    if (first_name) candidate.first_name = first_name;
+  
+    if (last_name)  candidate.last_name = last_name;
+    
+    if (email) candidate.email = email;
+    
+    if (description) candidate.description = description;
+    
+    if (picture) candidate.picture = picture;
+    
 
     // Save the updated candidate
     await candidate.save();
@@ -219,10 +211,38 @@ const updateCandidate = async (req,res) => {
     throw new Error('Failed to update candidate: ' + error.message);
   }
 };
+const checkUser = async (req, res) => {
+
+  const userId = req.params.id;
+  console.log(userId)
+  try {
+      const user = await User.findById(userId);
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Check if the user is an admin
+     
+
+      // Check if the user is a candidate
+      const candidate = await Candidate.findOne({ userId });
+
+      if (candidate) {
+          return res.status(200).json({ isCandidate: true });
+      }
+
+      // User is neither admin nor candidate
+      return res.status(200).json({ isCandidate: false });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 module.exports = {
     createCandidate,
-    getAllCandidate,uploadImage,getCandidateById,addVoteToCandidate,deleteCandidate,updateCandidate
+    getAllCandidate,getCandidateById,addVoteToCandidate,deleteCandidate,updateCandidate,checkUser
   }
 
 

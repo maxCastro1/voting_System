@@ -3,6 +3,7 @@ const Vote = require('../models/Vote'); // Import the Vote model
 const Candidate = require('../models/Candidates'); // Import the Candidate model
 const Election = require('../models/Election')
 const mongoose = require('mongoose');
+const Comment = require('../models/Comments')
 // Function to fetch all users
 const getAllUsers = async (req, res) => {
     try {
@@ -33,6 +34,7 @@ const deleteUserById = async (req, res) => {
   
       // Delete all votes associated with the user from the Vote model
       await Vote.deleteMany({ user: objectId });
+      await Comment.deleteMany({ user: objectId });
   
       // Update the votes array of all candidates to remove the user
       await Candidate.updateMany({ votes: objectId }, { $pull: { votes: objectId } });
@@ -53,15 +55,14 @@ const deleteUserById = async (req, res) => {
     const elections = await Election.find();
     const users = await User.find();
     try {
-      // Search through candidates
-      const matchedCandidates = candidates.filter(candidate => {
-        // Combine candidate's first name and last name for search
-        const fullName = `${candidate.first_name} ${candidate.last_name}`.toLowerCase();
-        // Check if candidate's full name or other relevant properties match the search term
-        return fullName.includes(searchTermLower) ||
-               candidate.description.toLowerCase().includes(searchTermLower) ||
-               candidate.email.toLowerCase().includes(searchTermLower);
-      });
+      // // Search through candidates
+      // const matchedCandidates = candidates.filter(candidate => {
+      //   // Combine candidate's first name and last name for search
+      //   const fullName = `${candidate.first_name} ${candidate.last_name}`.toLowerCase();
+      //   // Check if candidate's full name or other relevant properties match the search term
+      //   return fullName.includes(searchTermLower) ||
+      //          candidate.description.toLowerCase().includes(searchTermLower) 
+      // });
   
       // Search through elections
       const matchedElections = elections.filter(election => {
@@ -74,14 +75,20 @@ const deleteUserById = async (req, res) => {
       const matchedUsers = users.filter(user => {
         // Check if user's name or other relevant properties match the search term
         const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
+        const phoneString = user.phone ? user.phone.toString() : ''; // Convert user.phone to a string or set to empty string if not available
+        const cellString = user.cell ? user.cell.toString() : ''; // Convert user.cell to a string or set to empty string if not available
+      
         return fullName.toLowerCase().includes(searchTermLower) ||
-                user.age.toString().includes(searchTermLower) ||
-               user.email.toLowerCase().includes(searchTermLower) ||
-               user.nationalId.toString().toLowerCase().includes(searchTermLower)
+               (user.phone && phoneString.includes(searchTermLower)) ||
+               (user.cell && cellString.includes(searchTermLower)) ||
+               user.email.toLowerCase().includes(searchTermLower);
       });
+      
+      
   
       // Return the matched candidates, elections, and users as search results
-      const searchResults = { candidates: matchedCandidates, elections: matchedElections, users: matchedUsers };
+      // candidates: matchedCandidates,
+      const searchResults = {  elections: matchedElections, users: matchedUsers };
   
       // Send the search results as response
       res.status(200).json(searchResults);
@@ -94,7 +101,7 @@ const deleteUserById = async (req, res) => {
   
   const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { first_name, last_name, email, age, nationalId, picture } = req.body;
+    const { first_name, last_name, email, picture } = req.body;
     try {
       // Find the user by ID
       const user = await User.findById(id);
@@ -116,17 +123,7 @@ const deleteUserById = async (req, res) => {
       if (email) {
         user.email = email;
       }
-  
-      if (age) {
-        user.age = age;
-      }
-  
-      if (nationalId) {
-        user.nationalId = nationalId;
-      }
-  
-    
-  
+
       // Save the updated user
       await user.save();
       // Return the updated user object
@@ -137,6 +134,40 @@ const deleteUserById = async (req, res) => {
       throw new Error('Failed to update user: ' + error.message);
     }
   };
+  const getUserById = async (req, res) => {
+    const userId = req.params.id; // Assuming you pass the user's ID as a URL parameter
+    try {
+      // Use the findById() method on the User model to fetch the user by ID
+      const user = await User.findById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      res.status(200).json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  const getUserByIds = async (req, res) => {
+    const userIds = req.body.userIds; // Assuming you pass an array of user IDs in the request body
+    try {
+      // Use the find() method on the User model to fetch users by their IDs
+      const users = await User.find({ _id: { $in: userIds } });
   
+      if (users.length !== userIds.length) {
+        // Some user IDs were not found
+        const foundUserIds = users.map(user => user._id.toString());
+        const notFoundUserIds = userIds.filter(id => !foundUserIds.includes(id));
+        return res.status(404).json({ message: `Users with IDs [${notFoundUserIds.join(', ')}] not found` });
+      }
   
-  module.exports = {getAllUsers,deleteUserById,search,updateUser };
+      res.status(200).json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
+  module.exports = {getAllUsers,deleteUserById,search,updateUser,getUserById,getUserByIds  };

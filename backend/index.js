@@ -47,6 +47,10 @@ const candidateRouter = require('./routes/candidate');
 const electionRouter = require('./routes/election');
 const voteRouter = require('./routes/vote');
 const userRouter = require('./routes/User');
+const commentsRouter = require('./routes/comments');
+const noticationRouter = require('./routes/notification');
+
+
 
 
 
@@ -59,6 +63,9 @@ app.use('/api/v1/candidate', candidateRouter);
 app.use('/api/v1/election', electionRouter);
 app.use('/api/v1/vote', voteRouter);
 app.use('/api/v1/user', userRouter);
+app.use('/api/v1/comments', commentsRouter);
+app.use('/api/v1/notification', noticationRouter);
+
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 

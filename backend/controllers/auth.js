@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const Candidate = require('../models/Candidates')
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const path = require('path');
@@ -26,12 +27,11 @@ const register = async (req, res) => {
     try {
       // Check if there is already a user with the same email, name or national id in the database
  
-      const { email, first_name, nationalId, picture,last_name,password,age,admin } = req.body;
+      const { email, first_name,last_name,password,admin,picture,Phone,cell } = req.body;
       const existingUser = await User.findOne({
         $or: [
           { email },
           { first_name },
-          { nationalId },
         ],
       });
   
@@ -40,17 +40,17 @@ const register = async (req, res) => {
           error: "A user with the same email, name or national id already exists",
         });
       }
-      const imageUrl = await uploadImage(picture)
+      // const imageUrl = await uploadImage(picture)
       // Create the new user if no existing user was found
       const user = await User.create({
         first_name,
         last_name,
         email,
         password,
-        age,
-        nationalId,
         admin,
-        picture: imageUrl
+        picture,
+        phone:Phone,
+        cell
       });
 
       const token = user.createJWT();
@@ -62,29 +62,36 @@ const register = async (req, res) => {
   };
 
   const login = async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ message: 'Please provide email and password' })
+      return res.status(400).json({ message: 'Please provide email and password' });
     }
   
-    const user = await User.findOne({ email })
+    try {
+      const user = await User.findOne({ email });
   
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid Credentials' })
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid Credentials' });
+      }
+  
+      const isPasswordCorrect = await user.comparePassword(password);
+  
+      if (!isPasswordCorrect) {
+        return res.status(401).json({ message: 'Invalid Credentials' });
+      }
+  
+      const token = user.createJWT();
+  
+      // Check if the user is also a candidate
+    const candidate = await Candidate.findOne({ userId: user._id });
+    console.log(candidate)
+      return res.status(200).json({ user, token, candidate });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Internal server error' });
     }
+  };
   
-    const isPasswordCorrect = await user.comparePassword(password)
-    
-    console.log(isPasswordCorrect)
-    if (!isPasswordCorrect) {
-      return res.status(401).json({ message: 'Invalid Credentials' })
-    }
-  
-    const token = user.createJWT()
-  
-    return res.status(200).json({ user, token })
-  }
-
   module.exports = {
     register,
     login
