@@ -30,9 +30,6 @@ const BodyNav = () => {
             <NavLink to="/create/candidate" activeclassname="active">
               Register candidate
             </NavLink>
-            <NavLink to="/add/candidates" activeclassname="active">
-              Add candidate to position
-            </NavLink>
             <NavLink to="/candidates" activeclassname="active">
               Candidates
             </NavLink>
