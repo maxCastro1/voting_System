@@ -2,9 +2,10 @@ import React ,{useState, useEffect} from 'react'
 import Candidate from '../candidateView/Candidate';
 import axios from 'axios';
 import {HiBadgeCheck} from "react-icons/hi";
+import Comments from '../comments/Comments';
 const DisplayElection = ({election,hoursLeft}) => {
 
-     const [hasVoted, setHasVoted] = useState(false); 
+     const [hasVoted, setHasVoted] = useState(null); 
      const user = JSON.parse(localStorage.getItem('user'));
      useEffect(() => {
        axios.post(`http://localhost:5000/api/v1/vote/userCheck`,{
@@ -32,10 +33,11 @@ const DisplayElection = ({election,hoursLeft}) => {
     <div className='elections-cont-body'>
        {election.candidates.map((candidate,index)=>{
           return(
-            <Candidate candidates={candidate} electionId={election._id} key={index} hasVoted={hasVoted}/>
+            <Candidate candidates={candidate} election={election} key={index} hasVoted={hasVoted} />
           )
        })}
     </div>
+      <Comments election={election}/>
     </div>
   )
 }

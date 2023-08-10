@@ -4,6 +4,7 @@ import '../login/login.css'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { VscError } from "react-icons/vsc";
+import LoadingSpinner from '../../components/Loader/Loader';
 
 const Register = () => {
     const [firstName, setFirstName] = useState('');
@@ -11,8 +12,9 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [nationalId, setNationalId] = useState('');
+    const [Phone, setPhone] = useState('');
     const [age, setAge] = useState('');
+    const [cell, setCell] = useState('');
     const [picture, setPicture] = useState(null);
     const [error, setError] = useState('');
     const [loading,setLoading] = useState(false)
@@ -21,7 +23,7 @@ const Register = () => {
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      if (!firstName || !lastName || !password || !confirmPassword || !nationalId || !age || !picture || !email) {
+      if (!firstName || !lastName || !password || !confirmPassword  || !email || !cell ) {
         return setError('Please fill out all fields');
         
       } else if (password !== confirmPassword) {
@@ -34,6 +36,7 @@ const Register = () => {
         setLoading(true)
         const reader = new FileReader();
         reader.readAsDataURL(picture);
+        console.log(reader)
         reader.onloadend = () => {
           const base64Image = reader.result;
           axios.post('http://localhost:5000/api/v1/auth/register', {
@@ -41,9 +44,9 @@ const Register = () => {
             last_name: lastName,
             email,
             password,
-            nationalId,
-            age,
-            picture: base64Image
+            picture: base64Image,
+            Phone,
+            cell
        
         }).then(response => {
             console.log(response.data);
@@ -87,8 +90,12 @@ const Register = () => {
         <input type="password" id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}disabled={loading} />
       </div>
       <div className='form-fields'>
-        <label htmlFor="nationalId">National ID</label>
-        <input type="text" id="nationalId" value={nationalId} onChange={(e) => setNationalId(e.target.value)} disabled={loading}/>
+        <label htmlFor="nationalId">Phone</label>
+        <input type="text" id="nationalId" value={Phone} onChange={(e) => setPhone(e.target.value)} disabled={loading}/>
+      </div>
+      <div className='form-fields'>
+        <label htmlFor="nationalId">Cell</label>
+        <input type="text" id="nationalId" value={cell} onChange={(e) => setCell(e.target.value)} disabled={loading}/>
       </div>
       <div className='form-fields'>
         <label htmlFor="age">Age</label>
@@ -100,7 +107,7 @@ const Register = () => {
       </div>
       {error && <div id="error"><VscError/>{error}</div>}
       <div className='button-cont'>
-      <button type="submit" disabled={loading}>{loading ? "Loading..." : "Register"}</button>
+      <button type="submit" disabled={loading}>{loading ? <LoadingSpinner/> : "Register"}</button>
       <a href='/login' className='link-paragraph'>Already have any account? <u>LOGIN</u></a>
       </div>
      

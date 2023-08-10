@@ -14,15 +14,14 @@ const Header = () => {
     const [userProfile, setUserProfile] = useState(false); // Initialize to false
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-    const  user = JSON.parse(localStorage.getItem('user'));
     useEffect(() => {
         (localStorage.getItem('user')) ? setUserProfile(true) : setUserProfile(false)
         setButton(location.pathname === '/login' ? 'Register' : 'Login')
     }, [location])
-
+   console.log(searchValue)
     const handleSearch = (event) => {
         event.preventDefault()
-        console.log(searchValue)
+        console.log(searchValue);
         navigate(`search/${searchValue}`)
         setSearchOpen(false)
     }
@@ -47,16 +46,19 @@ const Header = () => {
             <div className='header-cont'>
                 {/* <a href='/'><img src={logo} className ='header-logo' alt="logo"/></a> */}
                 <div className='logo'><a href='/'>kigali bilingual church</a></div>
+               
                 <button onClick={() => toogleNav()} className='button-nav'>
                     {navOpen ? <GrFormClose className='close-btn' /> : <AiOutlineMenu />}
                 </button>
+              
                 <div className={`nav-link ${navOpen ? 'open' : 'closed'}`}>
                     <ul>
-                        {/* <li><a href='/' onClick={()=>toogleNav()}>Home</a></li> */}
+                        <li><a href='/notfication' onClick={()=>toogleNav()}>Notice</a></li>
                         {userProfile && <li><button className='logout' onClick={() => {setSearchOpen(!searchOpen) ; setNavOpen(false)}}>Search</button></li>}
                         <li><button onClick={() => {{ handleLogout() ; setNavOpen(false)} }} className='logout'>{userProfile ? "Logout" : button}</button></li>
                     </ul>
                 </div>
+             
             </div>
             {searchOpen && 
             <div className='search-bar-cont'>
@@ -72,7 +74,7 @@ const Header = () => {
         <button
           type='submit'
           className='search-button'
-          onClick={(event) => { handleSearch(event) }}
+          onClick={(event) => { handleSearch(event)}}
         >
           <BsSearch/>
         </button>

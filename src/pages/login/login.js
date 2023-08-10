@@ -3,6 +3,7 @@ import './login.css'
 import { VscError } from "react-icons/vsc";
 import {useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import LoadingSpinner from '../../components/Loader/Loader';
 
 const Login = () => {
 
@@ -35,6 +36,7 @@ const Login = () => {
       console.log(response.data);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('Candidate', JSON.stringify(response.data.candidate));
       navigate("/");
       setLoading(false)
    
@@ -75,7 +77,7 @@ const Login = () => {
             <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}  disabled={loading}/>
           </div>
           <div className='button-cont'>
-          <button type="submit" disabled={loading}>{loading ? "Loading..." : "Login"}</button>
+          <button type="submit" disabled={loading}>{loading ? <LoadingSpinner/> : "Login"}</button>
             <a href='/register' className='link-paragraph'>Dont have an account? <u>REGISTER</u></a>
          </div>
      

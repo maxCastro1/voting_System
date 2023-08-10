@@ -4,6 +4,7 @@ import './addCandidateToElection.css'
 import axios from 'axios';
 import {useNavigate } from 'react-router-dom';
 import { VscError } from 'react-icons/vsc';
+import LoadingSpinner from '../Loader/Loader';
 const AddCandidateToElection = () => {
 
   const [candidateId, setCandidateId] = useState('');
@@ -50,7 +51,7 @@ const AddCandidateToElection = () => {
     axios.get('http://localhost:5000/api/v1/election/')
   .then(response => {
     console.log(response.data);
-    setElections(response.data.election)
+    setElections(response.data.elections)
   })
   .catch(error => {
     console.log(error);
@@ -130,7 +131,7 @@ const AddCandidateToElection = () => {
         {candidateOptions}
       </select>
       </div>
-      <button type="submit" disabled={loading} >{loading ? "Loading..." : "Add Candidate"}</button>
+      <button type="submit" disabled={loading} >{loading ? <LoadingSpinner/> : "Add Candidate"}</button>
      
     </form>
       </div>

@@ -5,6 +5,7 @@ import { AiFillDelete } from 'react-icons/ai';
 import { VscError } from 'react-icons/vsc';
 import { IoMdClose } from 'react-icons/io';
 import { FiEdit } from 'react-icons/fi';
+import LoadingSpinner from '../Loader/Loader';
 
 const AllUser = () => {
 
@@ -60,7 +61,7 @@ const AllUser = () => {
         axios.post(`http://localhost:5000/api/v1/user/delete/${id}`)
             .then(response => {
                 localStorage.setItem('message', 'User deleted successful!');
-                window.location.reload();
+                setUsers(prevUsers => prevUsers.filter(user => user._id !== id));
             })
             .catch(error => {
                 console.log(error);
@@ -105,11 +106,14 @@ const AllUser = () => {
         };
 
     };
+    const filterOutAdmins = () => {
+        return users.filter((user) => !user.admin);
+      };
     if (!user) {
         navigate('/login')
     }
     if (loading) {
-        return <h1>Loading...</h1>
+        return  <LoadingSpinner width="50px" height="50px" border="3px solid #f3f3f3" borderTop="3px solid #383636" padding='2rem'/>
     }
 
     return (
@@ -119,7 +123,8 @@ const AllUser = () => {
          <div className='notication-message'>{notificationMessage}</div>
       </div> }
             <h1>All Users </h1>
-            {users.map((user, index) => {
+            {!users && <p>No Users found</p>}
+            {users && filterOutAdmins().map((user, index) => {
                 return (
                     <div className='all-candidates-cont extra-user' key={index} >
                         {openUpdate && <div className='edit-cont'>
@@ -159,19 +164,17 @@ const AllUser = () => {
                                     </div> */}
                                     {errors.length < 0  && <div id="error"><VscError />{errors}</div>}
                                     <div className='button-cont'>
-                                        <button type="submit" disabled={loading}>{loading ? "Loading..." : "Update"}</button>
+                                        <button type="submit" disabled={loading}>{loading ? <LoadingSpinner/> : "Update"}</button>
                                         <a href='/login' className='link-paragraph'>Already have any account? <u>LOGIN</u></a>
                                     </div>
 
                                 </form>
                             </div></div>}
                         <div className='candidates-cont extra-user-2'>
-                            <img src={user.picture} alt="candidate-photo" />
+                            <img src={user.picture} alt="candidate" />
                             <div className='candidates-cont-right'>
                                 <h2>Name: {user.first_name} {user.last_name}</h2>
                                 <h2>Email: {user.email} </h2>
-                                <h2>NationalId: {user.nationalId} </h2>
-                                <h2>Age: {user.age} </h2>
                                 <div className='elections-cont-body'>
                                 <button onClick={() => { deleteUser(user._id) }}>Delete<AiFillDelete /></button>
                                 <button id='green-buttons' onClick={() => { setOpenUpdate(true); setCurentId(user._id) }}>update<FiEdit /></button>

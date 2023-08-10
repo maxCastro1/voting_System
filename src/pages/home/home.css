@@ -26,7 +26,7 @@ main  h1 {
     gap: 1rem;
     padding-inline-start: 1rem;
     overflow: auto; 
-    padding: 1rem;
+    padding: .5rem;
     position: relative;
     z-index: 10;
    
@@ -37,15 +37,15 @@ main  h1 {
     width: 1rem; /* Adjust the width as needed */
   }
 .option-cont a {
-    padding:1rem;
+    padding: .5rem 1rem;
     background-color: #2565AE;
     border-radius: 40px;
     min-width:max-content;
     color: rgba(255, 255, 255, 0.85);
-    transition: all .2s ease;
+    transition: all .5s ease;
 }
 .option-cont a:hover {
-   transform: scaleX(1.1);
+   transform: scaleX(1.05);
 }
 .elections-cont { 
     margin-inline: 1rem;
@@ -57,11 +57,26 @@ main  h1 {
     max-width: 600px;
     width: 60%;
     min-width: 275px;
-    box-shadow: 0px 5px 10px 0px rgba(42, 22, 22, 0.59);
-    -webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.59);
-    -moz-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.59);
+    box-shadow:  -5px 8px 8px 0px rgba(0,0,0,0.59);
+    -webkit-box-shadow:  -5px 8px 8px 0px rgba(0,0,0,0.59);
+    -moz-box-shadow:  -5px 8px 8px 0px rgba(0,0,0,0.59);
   
 }
+.option-cont::-webkit-scrollbar {
+    height: 3px;
+  } 
+.option-cont::-webkit-scrollbar-track {
+    
+  }
+.option-cont::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #2565AE;
+
+  }
+  
+   
+  
+
 .elections-cont  button {
     margin-block:1rem;
     padding: .8rem 2rem;
@@ -183,7 +198,7 @@ main  h1 {
 }
 .redirect-link:hover{
 
-     font-size: .9rem;
+     /* font-size: .9rem; */
      color: rgba(0, 0, 0, 0.807);
      
 }
@@ -224,6 +239,12 @@ main  h1 {
     }
     .elections-cont-body {
         padding-top: 1rem;
+    }
+    .option-cont { 
+  
+        padding: .8rem;
+    
+       
     }
    
   }

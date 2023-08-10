@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import LoadingSpinner from '../Loader/Loader';
 const Search = () => {
     const { searchValue } = useParams();
     const [searchInput, setSearchInput] = useState('');
     const [searchData, setSearchData] = useState('');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     useEffect(() => {
         // Set the value from the URL parameter to the search input state
         setSearchInput(searchValue);
@@ -18,24 +20,28 @@ const Search = () => {
             setLoading(false)
         })
         .catch((error)=>{
+            setError(true)
             console.log(error)
             setLoading(false)
         })
       }, [searchValue]);
 
 if(loading){
-    return <div className='sub-home-cont search-cont'><h1>Loading</h1></div>
+    return <LoadingSpinner width="50px" height="50px" border="3px solid #f3f3f3" borderTop="3px solid #0F5298" padding='2rem'/>
+}
+if(error){
+ return <h1>Something went wrong, please try again.</h1>
 }
    
 
   return (
     <div className='sub-home-cont search-cont'>
-        {searchData.candidates.length > 0 && <>
+        {/* {searchData.candidates.length > 0 && <>
             <h1>Results from candidates</h1>
             { searchData.candidates.map((candidate,index)=>{
                 return(
                     <div className='candidates-cont' key={index}>
-                    <img src={candidate?.picture} alt="candidate-photo" />
+                    <img src={candidate?.picture} alt="candidate" />
                     <div className='candidates-cont-right'>
                       <h2>{candidate.first_name} {candidate.last_name}</h2>
                       <h4>{`Total Votes : ${candidate.votes.length}`}</h4>
@@ -46,7 +52,7 @@ if(loading){
            
         </>
            
-        }
+        } */}
           { searchData.elections.length > 0 && <>
             <h1>Results from Positions</h1>
           {  searchData.elections.map((election,index)=>{
@@ -83,7 +89,7 @@ if(loading){
                 { searchData.users.map((user,index)=>{
                 return(
                     <div className='candidates-cont extra-user-2' key={index}>
-                    <img src={user.picture} alt="candidate-photo" />
+                    <img src={user.picture} alt="candidate" />
                     <div className='candidates-cont-right'>
                         <h2>Name: {user.first_name} {user.last_name}</h2>
                         <h2>Email: {user.email} </h2>
@@ -98,7 +104,7 @@ if(loading){
                 </>
             }
 
-            {  searchData.users.length < 1 && searchData.elections.length < 1 && searchData.candidates.length < 1 && 
+            {  searchData.users.length < 1 && searchData.elections.length < 1  && 
             <h1>{`No results for ${searchInput}`} </h1>
             }
 

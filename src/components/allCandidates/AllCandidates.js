@@ -7,10 +7,12 @@ import { VscError } from 'react-icons/vsc';
 import { IoMdClose } from 'react-icons/io';
 import { FiEdit } from 'react-icons/fi';
 import {useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../Loader/Loader';
 
 
 const AllCandidates = () => {
   const user = JSON.parse(localStorage.getItem('user'));
+  const [users, setUsers] = useState('');
   const [candidates, setCandidates] = useState("");
   const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState("");
@@ -37,16 +39,28 @@ const AllCandidates = () => {
     }
   }, []);
   useEffect(() => {
+    setLoading(true);
     axios.get('http://localhost:5000/api/v1/candidate/')
       .then(response => {
         console.log(response.data)
         setCandidates(response.data.candidates)
-        setLoading(false)
+      
       })
       .catch(error => {
         console.log(error);
         setLoading(false)
       });
+      setLoading(true)
+      axios.get('http://localhost:5000/api/v1/user/')
+          .then(response => {
+              console.log(response.data.users);
+              setUsers(response.data.users);
+              setLoading(false);
+          })
+          .catch(error => {
+              console.log(error);
+              setLoading(false);
+          });
   }, [])
  if(!user){
   return navigate('/login')
@@ -93,7 +107,8 @@ const AllCandidates = () => {
     axios.post(`http://localhost:5000/api/v1/candidate/delete/${id}`)
       .then(response => {
         localStorage.setItem('message', 'Candidate deleted successful!');
-        window.location.reload();
+        setCandidates(prevCandidates => prevCandidates.filter(candidate => candidate._id !== id));
+        
       })
       .catch(error => {
         console.log(error);
@@ -101,7 +116,7 @@ const AllCandidates = () => {
   }
 
   if (loading) {
-    return <h1>Loading...</h1>
+    return  <LoadingSpinner width="50px" height="50px" border="3px solid #f3f3f3" borderTop="3px solid #383636" padding='2rem'/>
   }
   return (
     <div className='candidates-holdong-cont'>
@@ -111,6 +126,7 @@ const AllCandidates = () => {
       </div> }
       <h1>All Candidate Runing </h1>
       {candidates.map((candidate, index) => {
+       const userObj = users.find(user => user._id === candidate.userId); 
         return (
           <div className='all-candidates-cont' key={index}>
             {openUpdate && <div className='edit-cont'>
@@ -172,18 +188,18 @@ const AllCandidates = () => {
                     />
                   </div>
                   <div className="button-cont">
-                    <button type="submit" disabled={loading} >{loading ? "Loading..." : "Update"}</button>
+                    <button type="submit" disabled={loading} >{loading ?<LoadingSpinner/> : "Update"}</button>
                   </div>
                 </form>
               </div>
             </div>}
             <div className='candidates-cont'>
-              <img src={candidate?.picture} alt="candidate-photo" />
+              <img src={userObj?.picture} alt="candidate" />
               <div className='candidates-cont-right'>
-                <h2>{candidate.first_name} {candidate.last_name}</h2>
+                <h2>{userObj.first_name} {userObj.last_name}</h2>
                 <h4>{`Total Votes : ${candidate.votes.length}`}</h4>
                 <div className='buttons-cont'>
-                  {user.admin ? <button onClick={() => { deleteCandidate(candidate._id) }}>Delete<AiFillDelete /></button> : <p>Description: {candidate.description}</p>}
+                  {user.admin ? <button onClick={() => { deleteCandidate(userObj._id) }}>Delete<AiFillDelete /></button> : <p>Description: {candidate.description}</p>}
                   {user.admin && <button id='green-buttons'onClick={() => { setOpenUpdate(true) ; setCurentId(candidate._id) }}>update<FiEdit/></button>}
                 </div>
               </div>

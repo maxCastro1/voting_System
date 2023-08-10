@@ -5,7 +5,7 @@ html, body {
   margin: 0;
   box-sizing: border-box;
   background-color: #F0F8FF;
-  font-family: 'Noto Serif', serif;
+  font-family:sans-serif;
 }
 a,
 a:visited{

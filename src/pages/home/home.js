@@ -13,6 +13,7 @@ import AllVotes from '../../components/allElection.js/allElection'
 import AllUser from '../../components/allUsers/allUser'
 import Search from '../../components/search/search'
 import LandingPage from '../LandingPage/landingPage'
+import Notification from '../../components/notification/notification'
 const Home = ({user}) => {
   return (
     <main>
@@ -27,6 +28,7 @@ const Home = ({user}) => {
         <Route path="election/" element={<AllVotes />} />
         <Route path="users/" element={<AllUser />} />
         <Route path="search/:searchValue" element={<Search />} />
+        <Route path="notfication/" element={<Notification />} />
       </Routes>
       <Footer />
     </main>

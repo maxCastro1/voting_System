@@ -17,7 +17,6 @@
 .login-form-container {
     width: 95%;
     max-width: 400px;
-    max-height: 980px;
     height: max-content;
     margin-inline: auto;
     background-color:#2565AE;
@@ -122,4 +121,15 @@ select{
 .notication-message{
     padding: 1rem;
     letter-spacing: 0.05rem;
+}
+.checkbox {
+  display: flex;
+  flex-direction: row;
+}
+.checkbox label {
+  display: flex;
+  align-self: center;
+}
+input[type="checkbox" i]{
+  width: 30px;
 }

@@ -4,20 +4,23 @@
     background-color: #2565AE;
     border-radius: 8px;
     padding: 2rem .5rem; 
-    max-width: 500px;
+    max-width: 0px;
     min-width: 250px;
     box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
     -webkit-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
     -moz-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.5);
-   
-    width: 100%;
-    border-bottom: solid 2px #80008096;
+   margin-top: 1rem;
+    /* width: 100%; */
+    border-bottom: solid 1px #DCEDC8;
 }
 .cont-upper{
     display: flex;
     gap:1rem;
     color: rgba(255, 255, 255, 0.85);
 
+}
+.cont-upper-winner {
+    flex-direction: column;
 }
 .cont-upper p {
     color: rgba(255, 255, 255, 0.85);
@@ -51,14 +54,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
 }
 .cont-lower button:hover{ 
     transform: scale(1.1);
   }
+.done-pic{
+    border-radius: 8px !important;
+    max-width: 300px;
+    max-height: 300px;
+    object-fit: cover !important;
+    width: 100% !important;
+    height: auto !important;
+    display: flex;
+   
+    
+}
+.winner-name {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
 
   @media screen and (min-width: 480px) {
     .candidate-cont{
-        padding: 2rem 1rem; 
+        padding: 1rem; 
         
     }
   }

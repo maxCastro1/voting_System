@@ -1,148 +1,141 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import '../../pages/login/login.css';
-import axios from 'axios'
-import { Buffer } from 'buffer';
-import {useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { VscError } from "react-icons/vsc";
+import LoadingSpinner from "../Loader/Loader";
+import { useNavigate } from 'react-router-dom';
 
 const CreateCandidate = () => {
-    const navigate = useNavigate()
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
+    const [department, setDepartment] = useState("");
     const [description, setDescription] = useState("");
-    const [picture, setPicture] = useState("");
     const [errors, setErrors] = useState([]);
-    const [loading,setLoading] = useState(false);
-    const  user = JSON.parse(localStorage.getItem('user'));
+    const [loading, setLoading] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState("");
+    const [users, setUsers] = useState([]);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const [notificationMessage, setNotificationMessage] = useState(null);
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/api/v1/user");
+                const nonAdminUsers = response.data.users.filter((user) => !user.admin);
+                setUsers(nonAdminUsers);
+            } catch (error) {
+                console.error(error);
+            }
+        };
     
-    if(!user){
+        fetchUsers();
+    }, []);
+    
+
+    if (!user) {
         return navigate('home')
-     }
+    }
+
+    const notifie = (message) => {
+        if (message) {
+            setNotificationMessage(message);
+            setTimeout(() => {
+                setNotificationMessage(null)
+            }, 2000);
+        }
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-
         const newErrors = [];
-
-        if (firstName.length < 3) newErrors.push("First name cannot be empty");
-        if (lastName.length < 3) newErrors.push("Last name cannot be empty");
-        if (!email)  newErrors.push("Email cannot be empty");
-        if (description.length < 7)  newErrors.push("Description cannot be empty");
-        if (!picture)  newErrors.push("Picture cannot be empty");
+        if (description.length < 7) newErrors.push("Description cannot be empty");
         setErrors(newErrors);
 
         if (newErrors.length === 0) {
             setLoading(true);
-            const reader = new FileReader();
-            reader.readAsDataURL(picture);
-            reader.onloadend = () => {
-              const base64Image = reader.result
-              axios.post('http://localhost:5000/api/v1/candidate/create', {
-                first_name: firstName,
-                last_name: lastName,
-                email,
+            axios.post('http://localhost:5000/api/v1/candidate/create', {
                 description,
-                picture: base64Image
-              })
-           
-              .then(response => {
-                console.log(response.data);
-                console.log("success");
-                setFirstName("");
-                setLastName("");
-                setEmail("");
-                setDescription("");
-                setPicture(null);
-                setErrors([]);
-                setLoading(false)
-                localStorage.setItem('message', 'Candidate created successful!');
-                navigate("/add/candidates")
-                
-              }).catch(error => {
-                console.error(error);
-                console.log("error");
-                setErrors(["something went wrong , please try again"])
-                setLoading(false)
-              });
-            };
+                userId: selectedUserId,
+                department
+            })
+                .then(response => {
+                    console.log(response.data);
+                    setDepartment("");
+                    setDescription("");
+                    setErrors([]);
+                    setLoading(false)
+                    notifie("Candidate created successful!"); 
+                    const candidateIds = response.data.candidates.map((candidate) => candidate.userId);
+                    setUsers(candidateIds);
+
+                })
+                .catch(error => {
+                    console.error(error);
+                    console.log("error");
+                    setErrors(["something went wrong, please try again"])
+                    setLoading(false)
+                });
         }
     };
 
-    
-
     return (
-        <>
-          
-            <div className='cont'>
+        <div className='cont'>
+            {notificationMessage &&
+                <div className='notification'>
+                    <div className='notication-message'>{notificationMessage}</div>
+                </div>}
             <h1>New Candidate</h1>
-                <div className='login-form-container'>
-                    <p className='title'>Create a Candidate</p>
-                    <form onSubmit={handleSubmit}>
-                        {errors.length > 0 && (
-                            <ul>
-                                {errors.map((error, index) => (
-                                    <li key={index}id="error"><VscError/>{error}</li>
-                                ))}
-                            </ul>
-                        )}
-                        <div className="form-fields">
-                            <label htmlFor="firstName">First Name:</label>
-                            <input
-                                type="text"
-                                id="firstName"
-                                value={firstName}
-                                onChange={(event) => setFirstName(event.target.value)}
-                                disabled={loading}
-                            />
-                        </div>
-                        <div className="form-fields">
-                            <label htmlFor="lastName">Last Name:</label>
-                            <input
-                                type="text"
-                                id="lastName"
-                                value={lastName}
-                                onChange={(event) => setLastName(event.target.value)}
-                                disabled={loading}
-                            />
-                        </div>
-                        <div className="form-fields">
-                            <label htmlFor="email">Email:</label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value)}
-                                disabled={loading}
-                            />
-                        </div>
-                        <div className="form-fields">
-                            <label htmlFor="description">Description:</label>
-                            <textarea
-                                id="description"
-                                value={description}
-                                onChange={(event) => setDescription(event.target.value)}
-                                disabled={loading}
-                            />
-                        </div>
-                        <div className="form-fields">
-                            <label htmlFor="picture">Picture:</label>
-                            <input
-                                type="file"
-                                id="picture"
-                                onChange={(event) => setPicture(event.target.files[0])}
-                                disabled={loading}
-                            />
-                        </div>
-                        <div className="button-cont">
-                            <button type="submit" disabled={loading}>{loading ? "Loading..." : "Register"}</button>
-                        </div>
-                    </form>
-                </div>
+            <div className='login-form-container'>
+                <p className='title'>Create a Candidate</p>
+                <form onSubmit={handleSubmit}>
+                    {errors.length > 0 && (
+                        <ul>
+                            {errors.map((error, index) => (
+                                <li key={index} id="error"><VscError />{error}</li>
+                            ))}
+                        </ul>
+                    )}
+                    <div className="form-fields">
+                        <label htmlFor="user">Select User:</label>
+                        <select
+                            id="user"
+                            value={selectedUserId}
+                            onChange={(event) => setSelectedUserId(event.target.value)}
+                            disabled={loading}
+                        >
+                            <option value="">Select a user</option>
+                            {users.map((user) => (
+                                <option key={user._id} value={user._id}>
+                                    {user.first_name} {user.last_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-fields">
+                        <label htmlFor="department">Department:</label>
+                        <input
+                            id="department"
+                            value={department}
+                            onChange={(event) => setDepartment(event.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+                    <div className="form-fields">
+                        <label htmlFor="description">Description:</label>
+                        <textarea
+                            id="description"
+                            value={description}
+                            onChange={(event) => setDescription(event.target.value)}
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div className="button-cont">
+                        <button type="submit" disabled={loading}>{loading ? <LoadingSpinner /> : "Register"}</button>
+                    </div>
+                </form>
             </div>
-        </>
+        </div>
+    );
+};
 
-    )
-
-}
-
-export default CreateCandidate
+export default CreateCandidate;

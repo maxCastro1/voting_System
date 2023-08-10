@@ -69,7 +69,7 @@ min-width: 300px;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    object-fit: fill;
+    object-fit: cover;
 }
 .extra-user {
   width: 80%;
@@ -120,8 +120,9 @@ min-width: 300px;
   cursor: pointer;
 }
 .active {
-  border: solid 2px black;
-  color:#000000 !important;
+  /* border: solid 1px #fca800; */
+  color:#fca800 !important;
+
 }
 @media screen and (max-width: 525px) {
  
